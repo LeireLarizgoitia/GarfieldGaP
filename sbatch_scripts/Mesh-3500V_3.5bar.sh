@@ -13,14 +13,14 @@ SLURM_ARRAY_TASK_ID=1
 # Set the configurable variables
 JOBNAME="Mesh-3500V_3.5bar" #"Mesh"
 PRESSURE=3.5 #10.0
-GASFILE="/scratch/llarizgoitia/GarfieldGap/Electroluminescence/gases/ar_3.5bar" # gas file
-MPHFILE="/scratch/llarizgoitia/GarfieldGap/ComsolData/mesh_GaP3D_photoedge" #"mesh GaP3D"
-DATAFILE="/scratch/llarizgoitia/GarfieldGap/ComsolData/ELscan/electricpotential-3500V" #"electricpotential GaP3D"
-MATFILE="/scratch/llarizgoitia/GarfieldGap/ComsolData/material_GaP3D" #"material GaP3D"
+GASFILE="/scratch/llarizgoitia/GarfieldGaP/Electroluminescence/gases/ar_3.5bar" # gas file
+MPHFILE="/scratch/llarizgoitia/GarfieldGaP/ComsolData/mesh_GaP3D_photoedge" #"mesh GaP3D"
+DATAFILE="/scratch/llarizgoitia/GarfieldGaP/ComsolData/ELscan/electricpotential-3500V" #"electricpotential GaP3D"
+MATFILE="/scratch/llarizgoitia/GarfieldGaP/ComsolData/material_GaP3D" #"material GaP3D"
 N_EVENTS=10000 #1
 
 # Create the directory
-cd /scratch/llarizgoitia/GarfieldGap/sbatch_scripts/job_output/
+cd /scratch/llarizgoitia/GarfieldGaP/sbatch_scripts/job_output/
 mkdir -p $JOBNAME/jobid_"${SLURM_ARRAY_TASK_ID}"
 cd $JOBNAME/jobid_"${SLURM_ARRAY_TASK_ID}"
 
@@ -37,7 +37,7 @@ echo "The seed number is: ${SEED}" 2>&1 | tee -a log_run_"${SLURM_ARRAY_TASK_ID}
 # NEXUS
 echo "Running Garfield" 2>&1 | tee -a log_run_"${SLURM_ARRAY_TASK_ID}".txt
 # evt id, num e-, seed, grid, jobid, pressure , gridfile datafile materialfile
-cmake /scratch/llarizgoitia/GarfieldGap/Electroluminescence
+cmake /scratch/llarizgoitia/GarfieldGaP/Electroluminescence
 make
 ./Mesh_noPrint ${SEED} ${N_EVENTS} ${SEED} ${SLURM_ARRAY_TASK_ID} ${PRESSURE} ${GASFILE} ${MPHFILE} ${DATAFILE} ${MATFILE}
 
@@ -56,4 +56,4 @@ let seconds=deltatime%60
 echo seconds
 printf "Time spent: %d:%02d:%02d\n" $hours $minutes $seconds | tee -a log_run_"${SLURM_ARRAY_TASK_ID}".txt
 
-cd /scratch/llarizgoitia/GarfieldGap/sbatch_scripts
+cd /scratch/llarizgoitia/GarfieldGaP/sbatch_scripts
