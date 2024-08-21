@@ -11,13 +11,13 @@ start=`date +%s`
 SLURM_ARRAY_TASK_ID=1
 
 # Set the configurable variables
-JOBNAME="$1" #"Mesh"
-PRESSURE=$2 #10.0
-GASFILE="$3" # gas file
-MPHFILE="$4" #"mesh GaP3D"
-DATAFILE="$5" #"electricpotential GaP3D"
-MATFILE="$6" #"material GaP3D"
-N_EVENTS=$7 #1
+JOBNAME="Mesh-8000V_2.5bar" #"Mesh"
+PRESSURE=2.5 #10.0
+GASFILE="/scratch/llarizgoitia/GarfieldGap/Electroluminescence/gases/ar_2.5bar" # gas file
+MPHFILE="/scratch/llarizgoitia/GarfieldGap/ComsolData/mesh_GaP3D_photoedge" #"mesh GaP3D"
+DATAFILE="/scratch/llarizgoitia/GarfieldGap/ComsolData/ELscan/electricpotential-8000V" #"electricpotential GaP3D"
+MATFILE="/scratch/llarizgoitia/GarfieldGap/ComsolData/material_GaP3D" #"material GaP3D"
+N_EVENTS=10000 #1
 
 # Create the directory
 cd /scratch/llarizgoitia/GarfieldGap/sbatch_scripts/job_output/

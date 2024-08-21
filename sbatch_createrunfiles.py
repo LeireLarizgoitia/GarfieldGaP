@@ -11,10 +11,12 @@ vcathode_500drift = np.arange(-20000,-7000,500)
 vcathode_100drift = np.arange(-4000,-2900,100)
 
 
-path = "/Users/llarizgoitialive/Library/CloudStorage/OneDrive-Personal/GanESS/GarfieldCode/GarfieldGap/Electroluminescence/"
-template = open(path+"jobs/sbatchMesh_job.sh", "rt").read()
+path = "/scratch/llarizgoitia/GarfieldGap/Electroluminescence/"
 
-path_data = "/Users/llarizgoitialive/Library/CloudStorage/OneDrive-Personal/GanESS/GarfieldCode/GarfieldGap/ComsolData/"
+path_real = "/Users/llarizgoitialive/Library/CloudStorage/OneDrive-Personal/GanESS/GarfieldCode/GarfieldGap/Electroluminescence/"
+template = open(path_real+"jobs/sbatchMesh_job.sh", "rt").read()
+
+path_data = "/scratch/llarizgoitia/GarfieldGap/ComsolData/"
 
 MPHFILE= path_data+"mesh_GaP3D_photoedge"
 MATFILE= path_data+"material_GaP3D"
