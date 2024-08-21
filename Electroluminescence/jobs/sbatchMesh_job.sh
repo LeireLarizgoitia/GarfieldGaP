@@ -20,7 +20,7 @@ MATFILE="$6" #"material GaP3D"
 N_EVENTS=$7 #1
 
 # Create the directory
-cd /Users/llarizgoitialive/Library/CloudStorage/OneDrive-Personal/GanESS/GarfieldCode/GarfieldGap/scripts/job_output/
+cd /Users/llarizgoitialive/Library/CloudStorage/OneDrive-Personal/GanESS/GarfieldCode/GarfieldGap/sbatch_scripts/job_output/
 mkdir -p $JOBNAME/jobid_"${SLURM_ARRAY_TASK_ID}"
 cd $JOBNAME/jobid_"${SLURM_ARRAY_TASK_ID}"
 
@@ -39,7 +39,6 @@ echo "Running Garfield" 2>&1 | tee -a log_run_"${SLURM_ARRAY_TASK_ID}".txt
 # evt id, num e-, seed, grid, jobid, pressure , gridfile datafile materialfile
 cmake /Users/llarizgoitialive/Library/CloudStorage/OneDrive-Personal/GanESS/GarfieldCode/GarfieldGap/Electroluminescence
 make
-#./Mesh_noPrint ${SEED} ${N_EVENTS} ${SEED} 1 ${SLURM_ARRAY_TASK_ID} ${PRESSURE} ${MPHFILE} ${DATAFILE} ${MATFILE}
 ./Mesh_noPrint ${SEED} ${N_EVENTS} ${SEED} ${SLURM_ARRAY_TASK_ID} ${PRESSURE} ${GASFILE} ${MPHFILE} ${DATAFILE} ${MATFILE}
 
 echo; echo; echo;
@@ -57,4 +56,4 @@ let seconds=deltatime%60
 echo seconds
 printf "Time spent: %d:%02d:%02d\n" $hours $minutes $seconds | tee -a log_run_"${SLURM_ARRAY_TASK_ID}".txt
 
-cd /Users/llarizgoitialive/Library/CloudStorage/OneDrive-Personal/GanESS/GarfieldCode/GarfieldGap/scripts
+cd /Users/llarizgoitialive/Library/CloudStorage/OneDrive-Personal/GanESS/GarfieldCode/GarfieldGap/sbatch_scripts

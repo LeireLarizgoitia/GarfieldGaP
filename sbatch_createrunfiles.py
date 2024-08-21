@@ -25,7 +25,7 @@ for j in range(0,len(pressure)):
     for i in range(0,len(vcathode_500drift)):
         DATAFILE = path_data+"ELscan/electricpotential"+str(vcathode_500drift[i])+"V"
         jobname = "Mesh"+str(vcathode_500drift[i])+"V_"+str(pressure[j])+"bar"
-        scriptname = "scripts/"+jobname +".sh"
+        scriptname = "sbatch_scripts/"+jobname +".sh"
         print(scriptname)
         template_str_rep = template.replace("$1", jobname).replace("$2", str(pressure[j])).replace("$3", GASFILE).replace("$4", MPHFILE).replace("$5", DATAFILE).replace("$6", MATFILE).replace("$7", str(N_EVENTS))
         with open(scriptname, "wt") as output:
@@ -34,7 +34,7 @@ for j in range(0,len(pressure)):
     for i in range(0,len(vcathode_100drift)):
         DATAFILE = path_data+"ELscan/electricpotential"+str(vcathode_100drift[i])+"V"
         jobname = "Mesh"+str(vcathode_100drift[i])+"V_"+str(pressure[j])+"bar"
-        scriptname = "scripts/"+ jobname +".sh"
+        scriptname = "sbatch_scripts/"+ jobname +".sh"
         print(scriptname)
         template_str_rep = template.replace("$1", jobname).replace("$2", str(pressure[j])).replace("$3", GASFILE).replace("$4", MPHFILE).replace("$5", DATAFILE).replace("$6", MATFILE).replace("$7", str(N_EVENTS))
         with open(scriptname, "wt") as output:
