@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH -J Mesh # A single job name for the array
 #SBATCH --nodes=1
-#SBATCH --mem 4000 # Memory request (6Gb)
-#SBATCH -t 0-24:00 # Maximum execution time (D-HH:MM)
-#SBATCH -o Mesh_%A_%a.out # Standard output
-#SBATCH -e Mesh_%A_%a.err # Standard error
+#SBATCH --mem 24000 # Memory request (in MB)
+#SBATCH -t 00-24:00:00 # Maximum execution time (DD-HH:MM:00)
+#SBATCH -o Mesh_job.out # Standard output
+#SBATCH -e Mesh_job.err # Standard error
 
 start=`date +%s`
 
@@ -27,7 +27,7 @@ cd $JOBNAME/jobid_"${SLURM_ARRAY_TASK_ID}"
 # Setup nexus and run
 echo "Setting Up Garfield" 2>&1 | tee -a log_run_"${SLURM_ARRAY_TASK_ID}".txt
 
-#source /Users/llarizgoitialive/Garfield/install/share/Garfield/setupGarfield.zsh
+# Load Garfield module that includes source to cmake
 ml load Garfield++/5.0
 
 # Calculate the unique seed number
