@@ -3,8 +3,9 @@
 #SBATCH --nodes=1
 #SBATCH --mem 24000 # Memory request (in MB)
 #SBATCH -t 00-24:00:00 # Maximum execution time (DD-HH:MM:00)
-#SBATCH -o Mesh_job_%A_%a.out # Standard output
-#SBATCH -e Mesh_job_%A_%a.err # Standard error
+#SBATCH -o arrayjob_%a.out # Standard output
+#SBATCH -e arrayjob_%a.err # Standard error | arrayjob_%A_%a.err : %A indicates job id
+#SBATCH --array=1-5       # instance indexes
 
 start=`date +%s`
 
@@ -21,6 +22,8 @@ N_EVENTS=2000 #1
 
 # Create the directory
 cd /scratch/llarizgoitia/GarfieldGaP/sbatch_scripts/job_output/
+mkdir -p Mesh_${PRESSURE}bar
+cd Mesh_${PRESSURE}bar
 mkdir -p $JOBNAME/jobid_"${SLURM_ARRAY_TASK_ID}"
 cd $JOBNAME/jobid_"${SLURM_ARRAY_TASK_ID}"
 
@@ -31,7 +34,7 @@ echo "Setting Up Garfield" 2>&1 | tee -a log_run_"${SLURM_ARRAY_TASK_ID}".txt
 ml load Garfield++/5.0
 
 # Calculate the unique seed number
-SEED=$(${N_EVENTS}*(${SLURM_ARRAY_TASK_ID} - 1)) #$((${N_EVENTS}*(${SLURM_ARRAY_TASK_ID} - 1) + ${N_EVENTS}))
+SEED=$((${N_EVENTS}*(${SLURM_ARRAY_TASK_ID} - 1) + ${N_EVENTS}))
 echo "The seed number is: ${SEED}" 2>&1 | tee -a log_run_"${SLURM_ARRAY_TASK_ID}".txt
 
 # NEXUS
@@ -52,5 +55,3 @@ let MM=deltatime/60 # Total number of minutes
 let minutes=${MM}%60
 let hours=${MM}/60
 printf "Time spent: %d:%02d:%02d\n" $hours $minutes $seconds | tee -a log_run_"${SLURM_ARRAY_TASK_ID}".txt
-
-cd /scratch/llarizgoitia/GarfieldGaP/sbatch_scripts

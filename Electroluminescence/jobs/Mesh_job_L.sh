@@ -21,6 +21,8 @@ N_EVENTS=$7 #1
 
 # Create the directory
 cd /Users/llarizgoitialive/Library/CloudStorage/OneDrive-Personal/GanESS/GarfieldCode/GarfieldGap/scripts/job_output/
+mkdir -p Mesh_${PRESSURE}bar
+cd Mesh_${PRESSURE}bar
 mkdir -p $JOBNAME/jobid_"${SLURM_ARRAY_TASK_ID}"
 cd $JOBNAME/jobid_"${SLURM_ARRAY_TASK_ID}"
 
@@ -47,13 +49,10 @@ echo "FINISHED....EXITING" 2>&1 | tee -a log_run_"${SLURM_ARRAY_TASK_ID}".txt
 
 end=`date +%s`
 let deltatime=end-start
-echo deltatime
-let hours=deltatime/3600
-echo hours
-let minutes=deltatime/60
-echo minutes
 let seconds=deltatime%60
-echo seconds
+let MM=deltatime/60 # Total number of minutes
+let minutes=${MM}%60
+let hours=${MM}/60
 printf "Time spent: %d:%02d:%02d\n" $hours $minutes $seconds | tee -a log_run_"${SLURM_ARRAY_TASK_ID}".txt
 
 cd /Users/llarizgoitialive/Library/CloudStorage/OneDrive-Personal/GanESS/GarfieldCode/GarfieldGap/scripts

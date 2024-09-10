@@ -3,16 +3,17 @@
 #SBATCH --nodes=1
 #SBATCH --mem 24000 # Memory request (in MB)
 #SBATCH -t 00-24:00:00 # Maximum execution time (DD-HH:MM:00)
-#SBATCH -o Mesh_job.out # Standard output
-#SBATCH -e Mesh_job.err # Standard error
+#SBATCH -o arrayjob_%a.out # Standard output
+#SBATCH -e arrayjob_%a.err # Standard error | arrayjob_%A_%a.err : %A indicates job id
+#SBATCH --array=1-5       # instance indexes
 
 start=`date +%s`
 
-SLURM_ARRAY_TASK_ID=1
+#SLURM_ARRAY_TASK_ID=1
 
 # Set the configurable variables
 JOBNAME="$1" #"Mesh"
-PRESSURE=$2 #10.0
+PRESSURE=$2 #bar
 GASFILE="$3" # gas file
 MPHFILE="$4" #"mesh GaP3D"
 DATAFILE="$5" #"electricpotential GaP3D"
@@ -21,6 +22,8 @@ N_EVENTS=$7 #1
 
 # Create the directory
 cd /scratch/llarizgoitia/GarfieldGaP/sbatch_scripts/job_output/
+mkdir -p Mesh_${PRESSURE}bar
+cd Mesh_${PRESSURE}bar
 mkdir -p $JOBNAME/jobid_"${SLURM_ARRAY_TASK_ID}"
 cd $JOBNAME/jobid_"${SLURM_ARRAY_TASK_ID}"
 
@@ -47,13 +50,8 @@ echo "FINISHED....EXITING" 2>&1 | tee -a log_run_"${SLURM_ARRAY_TASK_ID}".txt
 
 end=`date +%s`
 let deltatime=end-start
-echo deltatime
-let hours=deltatime/3600
-echo hours
-let minutes=deltatime/60
-echo minutes
 let seconds=deltatime%60
-echo seconds
+let MM=deltatime/60 # Total number of minutes
+let minutes=${MM}%60
+let hours=${MM}/60
 printf "Time spent: %d:%02d:%02d\n" $hours $minutes $seconds | tee -a log_run_"${SLURM_ARRAY_TASK_ID}".txt
-
-cd /scratch/llarizgoitia/GarfieldGaP/sbatch_scripts
