@@ -132,11 +132,12 @@ int main(int argc, char * argv[]) {
     bool plotmaps = false;
 
     // Mesh Boundary Zone
-    double MeshBoundary = 0.1 ; //4.5; // cm
-    double MeshSampleR = 0.09; // 3.5; // cm -- Circle radius to sample within
+    double MeshBoundary = 0.19;  // cm
+    double MeshSampleR  = 0.18;  // cm -- Circle radius to sample within
 
-    // Start Z
+    // Start Z (gate at z=0)
     double z0 = -0.2 ; //11.; //cm
+    double ELgap = 1.02 ; //cm
 
     // File Home
     std::string home;
@@ -158,8 +159,8 @@ int main(int argc, char * argv[]) {
     // This is the rotated mesh with the full unit cell
     if (type == "Rotated") {
         // Modify the mesh boundary to a larger value
-        MeshBoundary = 1.6; // cm
-        MeshSampleR  = 1.6; // cm
+        MeshBoundary = 0.19; // cm
+        MeshSampleR  = 0.18; // cm
     }
 
     // std::cout <<"Mph path is: " << home + "/"+ type + "/" + gridfile << std::endl;
@@ -346,14 +347,22 @@ int main(int argc, char * argv[]) {
         int ne = 0, ni = 0;
         aval.GetAvalancheSize(ne, ni);
 
+        //GetNumberOfElectronEndpoints returns all electron trajectories in the avalanche,
+        //including the ones of electrons that stopped because of attachment.
+        //In GetAvalancheSize these electrons are not counted.
+
+        //Electron attachment refers to the process in electron attachment mass spectrometry
+        //where negative ions are formed by attaching electrons to electronegative species.
+
         // Get information about all the electrons produced in the avalanche.
         unsigned int nBottomPlane = 0;
         unsigned int nTopPlane = 0;
 
-        // The electron left the drift medium.
-        constexpr double yGap = 0.7;
+        // Width of the parallel gap [cm]
+        constexpr double yGap = ELgap ; //EL gap
         for (const auto& electron : aval.GetElectrons()) {
           if (electron.status == -5) {
+            // The electron left the drift medium.
             if (electron.path.back().y < 0.0001) {++nBottomPlane;}
             else if (electron.path.back().y > yGap - 0.0001) {++nTopPlane;}
           }
@@ -417,9 +426,9 @@ int main(int argc, char * argv[]) {
 
         metadata.push_back(std::to_string(event)     + "," +
                            std::to_string(ne)        + "," +
-                           std::to_string(ni)        + "," +
+                           std::to_string(ni)        + "," + // does not account for ions formed in Electron attachment
                            std::to_string(nEl)       + "," +
-                           std::to_string(nIon)      + "," +
+                           std::to_string(nIon)      + "," + // accounts for ions formed in Electron attachment
                            std::to_string(nAtt)      + "," +
                            std::to_string(nInel)     + "," +
                            std::to_string(nExc)      + "," +
