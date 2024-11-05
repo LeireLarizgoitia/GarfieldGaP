@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -J Mesh_2ringFC_15000V # A single job name for the array
+#SBATCH -J Mesh_2ringFC # A single job name for the array
 #SBATCH --nodes=1
 #SBATCH --mem 48000 # Memory request (in MB)
 #SBATCH -t 00-24:00:00 # Maximum execution time (DD-HH:MM:00)

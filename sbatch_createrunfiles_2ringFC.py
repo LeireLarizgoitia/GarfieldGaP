@@ -14,7 +14,7 @@ vgate_500drift = np.arange(-15000,-4000,1000)
 path = "/scratch/llarizgoitia/GarfieldGaP/Electroluminescence/"
 
 path_real = "/Users/llarizgoitialive/Library/CloudStorage/OneDrive-Personal/GanESS/GarfieldCode/GarfieldGaP/Electroluminescence/"
-template = open(path_real+"jobs/sbatchMeshFC2Ring_job.sh", "rt").read()
+template = open(path_real+"jobs/sbatchMesh2ringFC_job.sh", "rt").read()
 
 path_data = "/scratch/llarizgoitia/GarfieldGaP/ComsolData/"
 
@@ -29,7 +29,7 @@ for j in range(0,len(pressure)):
         jobname = "Mesh"+str(vgate_500drift[i])+"V_"+str(pressure[j])+"bar"
         pressure_folder = "Mesh_"+str(pressure[j])+"bar"
         el_folder = "job-"+jobname
-        scriptname = "sbatch_scriptsFC2Ring/"+pressure_folder+"/"+el_folder+"/"+jobname +".sh"
+        scriptname = "sbatch_scripts_2ringFC/"+pressure_folder+"/"+el_folder+"/"+jobname +".sh"
         print(scriptname)
         template_str_rep = template.replace("$1", jobname).replace("$2", str(pressure[j])).replace("$3", GASFILE).replace("$4", MPHFILE).replace("$5", DATAFILE).replace("$6", MATFILE).replace("$7", str(N_EVENTS))
 

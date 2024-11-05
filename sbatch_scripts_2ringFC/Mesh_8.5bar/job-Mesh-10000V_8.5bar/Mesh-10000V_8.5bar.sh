@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -J Mesh_2ringFC_14000V # A single job name for the array
+#SBATCH -J Mesh_2ringFC # A single job name for the array
 #SBATCH --nodes=1
 #SBATCH --mem 48000 # Memory request (in MB)
 #SBATCH -t 00-24:00:00 # Maximum execution time (DD-HH:MM:00)
@@ -12,11 +12,11 @@ start=`date +%s`
 #SLURM_ARRAY_TASK_ID=1
 
 # Set the configurable variables
-JOBNAME="Mesh-14000V_8.5bar" #"Mesh"
+JOBNAME="Mesh-10000V_8.5bar" #"Mesh"
 PRESSURE=8.5 #bar
 GASFILE="/scratch/llarizgoitia/GarfieldGaP/Electroluminescence/gases/ar_8.5bar" # gas file
 MPHFILE="/scratch/llarizgoitia/GarfieldGaP/ComsolData/mesh_GaP3D_photoedge" #"mesh GaP3D"
-DATAFILE="/scratch/llarizgoitia/GarfieldGaP/ComsolData/ELscan/electricpotentialGate-14000V" #"electricpotential GaP3D"
+DATAFILE="/scratch/llarizgoitia/GarfieldGaP/ComsolData/ELscan/electricpotentialGate-10000V" #"electricpotential GaP3D"
 MATFILE="/scratch/llarizgoitia/GarfieldGaP/ComsolData/material_GaP3D" #"material GaP3D"
 N_EVENTS=2000 #1
 
