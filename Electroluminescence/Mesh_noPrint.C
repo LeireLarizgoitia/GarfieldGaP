@@ -64,7 +64,7 @@ void userHandle(double x, double y, double z, double t,
                 int type, int level, Garfield::Medium* /*1e-2*/) {
 
     // Skip inelastic collisions that are not excitations.
-    if (type != 4) return;
+    if (type != 4) return; //save tracks ONLY of	inelastic collisions that have produced	excitations.
 
     std::vector<float> temp;
 
@@ -359,7 +359,7 @@ int main(int argc, char * argv[]) {
         unsigned int nTopPlane = 0;
 
         // Width of the parallel gap [cm]
-        constexpr double yGap = ELgap ; //EL gap
+        constexpr double yGap = 1.02; //cm  ELgap ; //EL gap
         for (const auto& electron : aval.GetElectrons()) {
           if (electron.status == -5) {
             // The electron left the drift medium.
@@ -408,15 +408,17 @@ int main(int argc, char * argv[]) {
 
         }
 
-        unsigned int nEl = 0;
-        unsigned int nIon = 0;
-        unsigned int nAtt = 0;
-        unsigned int nInel = 0;
-        unsigned int nExc = 0;
-        unsigned int nSup = 0;
+        unsigned int nEl   = 0;  //nElastic
+        unsigned int nIon  = 0;  //nIonising
+        unsigned int nAtt  = 0;  //nAttachment
+        unsigned int nInel = 0;  //nInelastic
+        unsigned int nExc  = 0;  //nExcitation
+        unsigned int nSup  = 0;  //nSuperelastic
         gas.GetNumberOfElectronCollisions(nEl, nIon, nAtt, nInel, nExc, nSup);
         gas.ResetCollisionCounters();
-        nVUV.push_back(nExc + ni);
+        nVUV.push_back(nExc + ni); //There is no recombination.
+                                   //This is the sum of excitations produced in inelastic collisions
+                                   //and the photons from the deexcitation of ionized atoms.
 
         //std::cout << "  Number of electrons: " << ne << " (" << nTopPlane
         //        << " of them ended on the top electrode and " << nBottomPlane
@@ -425,11 +427,11 @@ int main(int argc, char * argv[]) {
         //        << "  Number of excitations: " << nExc << "\n";
 
         metadata.push_back(std::to_string(event)     + "," +
-                           std::to_string(ne)        + "," +
+                           std::to_string(ne)        + "," + // Total Number of electrons produced in the avalanche
                            std::to_string(ni)        + "," + // does not account for ions formed in Electron attachment
-                           std::to_string(nEl)       + "," +
+                           std::to_string(nEl)       + "," + // Elastic collisions (they will not produce photons)
                            std::to_string(nIon)      + "," + // accounts for ions formed in Electron attachment
-                           std::to_string(nAtt)      + "," +
+                           std::to_string(nAtt)      + "," + // there should not be any in Noble Gases
                            std::to_string(nInel)     + "," +
                            std::to_string(nExc)      + "," +
                            std::to_string(nTopPlane) + "," +
