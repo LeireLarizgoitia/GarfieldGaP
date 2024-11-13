@@ -1,2 +1,0 @@
-# GarfieldGaP
-GaP mesh study
