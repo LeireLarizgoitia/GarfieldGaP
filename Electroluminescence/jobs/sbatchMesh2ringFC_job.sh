@@ -5,7 +5,7 @@
 #SBATCH -t 00-24:00:00 # Maximum execution time (DD-HH:MM:00)
 #SBATCH -o arrayjob_%a.out # Standard output
 #SBATCH -e arrayjob_%a.err # Standard error | arrayjob_%A_%a.err : %A indicates job id
-#SBATCH --array=1-5       # instance indexes
+#SBATCH --array=1-10       # instance indexes
 
 start=`date +%s`
 
