@@ -42,7 +42,7 @@ vgate_3kVdrift = np.arange(-4000,-1200, 200)
 
 GASFILE = path+"Electroluminescence/gases/ar_"+str(pressure[0])+"bar"
 for i in range(0,len(vgate_3kVdrift)):
-    DATAFILE = path+"ComsolData/ELscan/electricpotentialGate"+str(vgate_3kVdrift[i])+"V"
+    DATAFILE = path+"ComsolData/ELscan_3kVdrift/electricpotentialGate"+str(vgate_3kVdrift[i])+"V"
     jobname = "Mesh"+str(vgate_3kVdrift[i])+"V_"+str(pressure[0])+"bar"
     pressure_folder = "Mesh_"+str(pressure[0])+"bar"
     el_folder = "job-"+jobname
