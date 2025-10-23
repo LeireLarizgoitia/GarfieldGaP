@@ -15,7 +15,7 @@ vgate_5kVdrift = np.concatenate((np.arange(-15000,-4500,500), np.arange(-4750,-2
 path = "/scratch/llarizgoitia/GarfieldGaP/"
 
 path_real = "/Users/llarizgoitialive/Library/CloudStorage/OneDrive-Personal/GanESS/GarfieldCode/GarfieldGaP/"
-template = open(path+"Electroluminescence/jobs/sbatchMesh2ringFC_job.sh", "rt").read()
+template = open(path+"Electroluminescence/jobs/sbatchMesh2ringFC_GasMedium_job.sh", "rt").read()
 
 MPHFILE= path+"ComsolData/mesh_GaP3D_photoedge"
 MATFILE= path+"ComsolData/material_GaP3D"
@@ -29,7 +29,7 @@ for j in range(0,len(pressure)):
         jobname = "Mesh"+str(vgate_5kVdrift[i])+"V_"+str(pressure[j])+"bar"
         pressure_folder = "Mesh_"+str(pressure[j])+"bar"
         el_folder = "job-"+jobname
-        scriptname = "sbatch_scripts_2ringFC/"+GASNAME+"/"+pressure_folder+"/"+el_folder+"/"+jobname +".sh"
+        scriptname = "sbatch_scripts_2ringFC_"+GASNAME+"/"+pressure_folder+"/"+el_folder+"/"+jobname +".sh"
         print(scriptname)
         template_str_rep = template.replace("$1", jobname).replace("$2", str(pressure[j])).replace("$3", GASFILE).replace("$4", MPHFILE).replace("$5", DATAFILE).replace("$6", MATFILE).replace("$7", str(N_EVENTS)).replace("$8", GASNAME)
 
@@ -47,7 +47,7 @@ for i in range(0,len(vgate_3kVdrift)):
     jobname = "Mesh"+str(vgate_3kVdrift[i])+"V_"+str(pressure[0])+"bar"
     pressure_folder = "Mesh_"+str(pressure[0])+"bar"
     el_folder = "job-"+jobname
-    scriptname = "sbatch_scripts_2ringFC/"+GASNAME+"/"+pressure_folder+"/"+el_folder+"/"+jobname +".sh"
+    scriptname = "sbatch_scripts_2ringFC_"+GASNAME+"/"+pressure_folder+"/"+el_folder+"/"+jobname +".sh"
     print(scriptname)
     template_str_rep = template.replace("$1", jobname).replace("$2", str(pressure[0])).replace("$3", GASFILE).replace("$4", MPHFILE).replace("$5", DATAFILE).replace("$6", MATFILE).replace("$7", str(N_EVENTS)).replace("$8", GASNAME)
 
