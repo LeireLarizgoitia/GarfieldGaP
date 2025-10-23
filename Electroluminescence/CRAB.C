@@ -1,4 +1,4 @@
-// This script illustrates the simulation of VUV electroluminescence 
+// This script illustrates the simulation of VUV electroluminescence
 // and its properties in pure Xe for the CRAB detector.
 #include <cstdlib>
 #include <iostream>
@@ -7,6 +7,7 @@
 #include <TApplication.h>
 #include <TCanvas.h>
 #include <TH1F.h>
+#include "TRandom3.h"
 
 #include "Garfield/ComponentComsol.hh"
 #include "Garfield/MediumGas.hh"
@@ -81,7 +82,7 @@ void userHandle(double x, double y, double z, double t,
 
 
 int main(int argc, char * argv[]) {
-    
+
     std::cout << "The event number is: " << argv[1] << std::endl;
     std::cout << "Simulating a total of " << argv[2] << " electrons" << std::endl;
     std::cout << "The seed number is: " << argv[3] << std::endl;
@@ -98,7 +99,7 @@ int main(int argc, char * argv[]) {
 
     // Number of primary electrons (avalanches) to simulate
     const unsigned int npe = std::stoi(argv[2]);
-    
+
     // Choose whether to plot the field maps
     bool plotmaps = true;
 
@@ -138,12 +139,12 @@ int main(int argc, char * argv[]) {
         plotmaps = false;
 
     }
-    
+
     std::string gridfile   = "CRAB_Mesh.mphtxt";
     std::string datafile   = "CRAB_Data.txt";
     std::string fileconfig = "CRABMaterialProperties.txt";
-    
-    // ----- 
+
+    // -----
 
 
     // Setup the gas.
@@ -151,23 +152,23 @@ int main(int argc, char * argv[]) {
     gas.SetTemperature(temperature);
     gas.SetPressure(pressure);
     gas.LoadGasFile("Xenon.gas");
-    gas.Initialise(true);  
+    gas.Initialise(true);
     gas.PrintGas();
 
     // Turn this on to generate the magboltz table
     // gas.GenerateGasTable(10);
-    // gas.WriteGasFile("xe_crab.gas"); // Save the table. 
+    // gas.WriteGasFile("xe_crab.gas"); // Save the table.
 
-    
+
     // Setup the electric potential map
     ComponentComsol* fm = new ComponentComsol(); // Field Map
     fm->Initialise(home + gridfile ,home + fileconfig, home + datafile, "cm");
-    
+
     // Print some information about the cell dimensions.
     fm->PrintRange();
 
     // Associate the gas with the corresponding field map material.
-    fm->SetGas(&gas); 
+    fm->SetGas(&gas);
     fm->PrintMaterials();
     fm->Check();
 
@@ -190,7 +191,7 @@ int main(int argc, char * argv[]) {
         TCanvas* cf2 = new TCanvas("cf2", "", 600, 600);
         cf2->SetLeftMargin(0.16);
         cf2->SetRightMargin(0.25);
-        // fieldViewXY.SetArea(-0.7, -0.8, 0.7, 0.7); 
+        // fieldViewXY.SetArea(-0.7, -0.8, 0.7, 0.7);
         fieldViewXY.SetCanvas(cf2);
         fieldViewXY.SetComponent(fm);
         fieldViewXY.SetNumberOfContours(100);
@@ -200,7 +201,7 @@ int main(int argc, char * argv[]) {
         TCanvas* cf3 = new TCanvas("cf3", "", 600, 600);
         cf3->SetLeftMargin(0.16);
         cf3->SetRightMargin(0.25);
-        // fieldViewXZ.SetArea(-0.7, -0.8, 0.7, 0.7); 
+        // fieldViewXZ.SetArea(-0.7, -0.8, 0.7, 0.7);
         fieldViewXZ.SetCanvas(cf3);
         fieldViewXZ.SetComponent(fm);
         fieldViewXZ.SetNumberOfContours(100);
@@ -217,7 +218,7 @@ int main(int argc, char * argv[]) {
     // Make a microscopic tracking class for electron transport.
     AvalancheMicroscopic aval;
     aval.SetSensor(&sensor);
-   
+
     // Make a histogram of the electron energy distribution.
     TH1D hEn("hEn","energy distribution", 1000, 0., 100.);
     aval.EnableElectronEnergyHistogramming(&hEn);
@@ -234,24 +235,24 @@ int main(int argc, char * argv[]) {
 	// fAvalancheMC.SetSensor(&sensor);
 	// fAvalancheMC.SetTimeSteps(0.05); // nsec, per example
 	// fAvalancheMC.SetDistanceSteps(2.e-1); // cm, 10x example
-	// fAvalancheMC.EnableDebugging(false); // way too much information. 
+	// fAvalancheMC.EnableDebugging(false); // way too much information.
 	// fAvalancheMC.EnableAttachment();
     // // fAvalancheMC.SetUserHandleInelastic(userHandle);
     // fAvalancheMC.EnablePlotting(&driftView);
 	// //    fAvalancheMC->DisableAttachment();
 
-    
+
     std::vector<unsigned int> nVUV;
 
     TRandom3 rng; // Random number generators for x and y positions
     rng.SetSeed(seed);
-    
+
     // Calculate a few avalanches.
     for (unsigned int i = 0; i < npe; ++i) {
         std::cout << "--------------------------------\n" << std::endl;
 
         event++;
-        
+
         // Release the primary electron near the top mesh.
         bool sample_pos = true;
 
@@ -268,48 +269,48 @@ int main(int argc, char * argv[]) {
                 y0 = rng.Uniform(-1*MeshBoundary, MeshBoundary);
             }
         }
-        
+
         const double t0 = 0.;
         double r = std::sqrt(x0*x0 + y0*y0);
 
         // Draw the initial energy [eV] from the energy distribution.
         const double e0 = i == 0 ? 1. : hEn.GetRandom();
         std::cout << "Avalanche "<< i + 1 << " of " << npe << ".\n";
-        
+
         std::cout << "  Primary electron starts at (x, y, z) = ("
-                    << x0 << ", " << y0 << ", " << z0 
+                    << x0 << ", " << y0 << ", " << z0
                     << ") with an energy of " << e0 << " eV.\n";
-        
+
         // Simulate the avalanche
         aval.AvalancheElectron(x0, y0, z0, t0, e0, 0, 0, 0);
-        
+
         // Get the number of electrons and ions.
         int ne = 0, ni = 0;
         aval.GetAvalancheSize(ne, ni);
-        
+
         // Get information about all the electrons produced in the avalanche.
         unsigned int nBottomPlane = 0;
         unsigned int nTopPlane = 0;
         const int np = aval.GetNumberOfElectronEndpoints();
 
         std::cout << "Number of electrons produced in avalanche: " << np << std::endl;
-        
+
         double x1, y1, z1, t1, e1;
         double x2, y2, z2, t2, e2;
         // Loop over the electrons produced [should be only one!]
         for (int ie = 0; ie < np; ie++) {
-            
+
             int status;
             aval.GetElectronEndpoint(ie, x1, y1, z1, t1, e1, x2, y2, z2, t2, e2, status);
 
             std::cout << "  Primary electron ends at (x, y, z) = ("
                     << x2 << ", " << y2 << ", " << z2
                     << ") with an energy of " << e2 << " eV.\n";
-            
+
             if (status == -5) {
-                
+
                 // The electron left the drift medium.
-                
+
                 // Landed on the bottom electrode
                 if (z2 < -11) {
                     ++nBottomPlane;
@@ -319,16 +320,16 @@ int main(int argc, char * argv[]) {
                 }
             }
             else {
-                std::cout << "\nElectron " << ie << " of avalanche " << i   
+                std::cout << "\nElectron " << ie << " of avalanche " << i
                         << " ended with a strange status (" << status << "):\n"
-                        << "(x1, y1, z1) = (" << x1 << ", " << y1 << ", " << z1 
+                        << "(x1, y1, z1) = (" << x1 << ", " << y1 << ", " << z1
                         << "), t1 = " << t1 << ", e1 = " << e1 << "\n"
-                        << "(x2, y2, z2) = (" << x2 << ", " << y2 << ", " << z2 
+                        << "(x2, y2, z2) = (" << x2 << ", " << y2 << ", " << z2
                         << "), t2 = " << t2 << ", e2 = " << e2 << "\n";
             }
 
         }
-        
+
         unsigned int nEl = 0;
         unsigned int nIon = 0;
         unsigned int nAtt = 0;
@@ -338,29 +339,29 @@ int main(int argc, char * argv[]) {
         gas.GetNumberOfElectronCollisions(nEl, nIon, nAtt, nInel, nExc, nSup);
         gas.ResetCollisionCounters();
         nVUV.push_back(nExc + ni);
-        
-        std::cout << "  Number of electrons: " << ne << " (" << nTopPlane 
-                << " of them ended on the top electrode and " << nBottomPlane 
+
+        std::cout << "  Number of electrons: " << ne << " (" << nTopPlane
+                << " of them ended on the top electrode and " << nBottomPlane
                 << " on the bottom electrode)\n"
                 << "  Number of ions: " << ni << "\n"
                 << "  Number of excitations: " << nExc << "\n";
-    
-        metadata.push_back(std::to_string(event)     + "," + 
+
+        metadata.push_back(std::to_string(event)     + "," +
                            std::to_string(ne)        + "," +
                            std::to_string(ni)        + "," +
-                           std::to_string(nEl)       + "," + 
-                           std::to_string(nIon)      + "," + 
-                           std::to_string(nAtt)      + "," + 
-                           std::to_string(nInel)     + "," + 
-                           std::to_string(nExc)      + "," + 
-                           std::to_string(nTopPlane) + "," +  
-                           std::to_string(nBottomPlane) + "," + 
-                           std::to_string(x0) + "," + 
-                           std::to_string(y0) + "," + 
-                           std::to_string(z0) + "," + 
-                           std::to_string(e1) + "," + 
+                           std::to_string(nEl)       + "," +
+                           std::to_string(nIon)      + "," +
+                           std::to_string(nAtt)      + "," +
+                           std::to_string(nInel)     + "," +
+                           std::to_string(nExc)      + "," +
+                           std::to_string(nTopPlane) + "," +
+                           std::to_string(nBottomPlane) + "," +
+                           std::to_string(x0) + "," +
+                           std::to_string(y0) + "," +
+                           std::to_string(z0) + "," +
+                           std::to_string(e1) + "," +
                            std::to_string(e2));
-    
+
     }
 
     // Print the num of VUV photons
@@ -376,7 +377,7 @@ int main(int argc, char * argv[]) {
         meshView->SetComponent(fm);
         // x-z projection
         meshView->SetPlane(0, -1, 0, 0, 0, 0);
-        meshView->SetFillMeshWithBorders(); 
+        meshView->SetFillMeshWithBorders();
         // Set the color of the kapton.
         meshView->SetColor(2, kYellow + 3);
         meshView->EnableAxes();
@@ -386,12 +387,12 @@ int main(int argc, char * argv[]) {
     }
 
     std::ofstream metafile;
-    
+
     // Initialize the csv file
     metafile.open(Form("Metadata_%s.csv", jobid));
 
     // metafile << "event,electrons,ions,elastic,ionisations,attachment,inelastic,excitation,top,bottom,start x,start y,start z, start E, end E"<< "\n";
-    
+
     for (unsigned int i = 0; i < metadata.size(); i++){
         std::cout << metadata.at(i)<< "\n";
         metafile << metadata.at(i) << "\n";
@@ -399,13 +400,13 @@ int main(int argc, char * argv[]) {
 
     metafile.close();
 
-    // --  
+    // --
 
     std::ofstream myfile;
-    
+
     // Initialize the csv file
     myfile.open(Form("EventInfo_%s.csv", jobid));
-    
+
     // myfile << "event,x,y,z,t" << "\n";
     for (unsigned int i = 0; i < evtInfo.size(); i++){
         // std::cout << evtInfo.at(i).at(k_evt)<< "," << evtInfo.at(i).at(k_x) << "," << evtInfo.at(i).at(k_y) << "," << evtInfo.at(i).at(k_z) << ","<< evtInfo.at(i).at(k_t) << "\n";
@@ -420,6 +421,3 @@ int main(int argc, char * argv[]) {
     }
 
 }
-
-
-
