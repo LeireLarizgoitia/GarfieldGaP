@@ -105,17 +105,10 @@ int main(int argc, char * argv[]) {
 
     std::string type     = "Aligned"; //std::string(argv[10]);
 
-    // Gas Physics
-    double temperature = 293.15; // Kelvin
-    double torr = 750.062;
-    double pressure = std::stod(argv[5])*torr; // Give pressure in bar and convert it to torr
-
-    std::string gasfile = std::string(argv[6])+".gas";
-
     // Data Files
-    std::string gridfile = std::string(argv[7])+".mphtxt"; //simpleMesh.mphtxt";
-    std::string datafile = std::string(argv[8])+".txt";  //simpleElectricPotential.txt";
-    std::string fileconfig = std::string(argv[9])+".txt"; //simple_MaterialProperties.txt";
+    std::string gridfile = std::string(argv[5])+".mphtxt"; //simpleMesh.mphtxt";
+    std::string datafile = std::string(argv[6])+".txt";  //simpleElectricPotential.txt";
+    std::string fileconfig = std::string(argv[7])+".txt"; //simple_MaterialProperties.txt";
 
     //std::cout << "The event number is: " << event << std::endl;
     //std::cout << "Simulating a total of " << npe << " electrons" << std::endl;
@@ -166,17 +159,20 @@ int main(int argc, char * argv[]) {
         MeshSampleR  = 0.18; // cm
     }
 
-    // std::cout <<"Mph path is: " << home + "/"+ type + "/" + gridfile << std::endl;
-    // std::cout <<"Data path is: " << home + "/"+ type + "/" + datafile << std::endl;
-
-
     // -----
+    // Gas Physics
+    double temperature = 293.15; // Kelvin
+    double torr = 750.062;
+    double pressure = std::stod(argv[8])*torr; // Give pressure in bar and convert it to torr
+
+    std::string gasname = std::string(argv[9]);
+    std::string gasfile = std::string(argv[10])+".gas";
 
     // Setup the gas.
-    //std::string gasname_ = std::string(argv[10]);
-    //MediumMagboltz gas(gasname_);
 
-    MediumMagboltz gas("ar");
+    MediumMagboltz gas(gasname);
+
+    //MediumMagboltz gas("xe");
 
     // Create gas medium
     //MediumMagboltz* gas = new MediumMagboltz();
@@ -481,7 +477,7 @@ int main(int argc, char * argv[]) {
     std::ofstream metafile;
 
     // Initialize the csv file
-    std::string fileMetadata = "Metadata_"+std::string(argv[5])+"bar.csv";
+    std::string fileMetadata = "Metadata_"+std::string(argv[8])+"bar.csv";
     metafile.open(fileMetadata);
 
     metafile << "event,electrons,ions,elastic,ionisations,attachment,inelastic,excitation,top,bottom,start x,start y,start z, start E, end E"<< "\n";
@@ -499,7 +495,7 @@ int main(int argc, char * argv[]) {
 
     // Initialize the csv file
 
-    std::string fileEventInfo = "EventInfo_"+std::string(argv[5])+"bar.csv";
+    std::string fileEventInfo = "EventInfo_"+std::string(argv[8])+"bar.csv";
     myfile.open(fileEventInfo);
 
     myfile << "event,x,y,z,t" << "\n";
