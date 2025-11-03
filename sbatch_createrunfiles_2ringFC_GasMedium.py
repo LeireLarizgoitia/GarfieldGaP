@@ -37,6 +37,34 @@ for j in range(0,len(pressure)):
         with open(scriptname, "wt") as output:
             output.write (template_str_rep)
 
+#----------------------------------------------
+#----------------------------------------------
+#----------------------------------------------
+
+pressure = [2.5] #bar
+vgate_5kVdrift_lowEp = np.concatenate((np.arange(-2250,-1000,250), np.arange(-1000,-300, 100)))
+#print(vgate_5kVdrift_lowEp)
+
+MPHFILE= path+"ComsolData/mesh_GaP3D_photoedge_lowEp"
+
+for j in range(0,len(pressure)):
+    GASFILE = path+"Electroluminescence/gases/"+GASNAME+"_"+str(pressure[j])+"bar"
+    for i in range(0,len(vgate_5kVdrift_lowEp)):
+        DATAFILE = path+"ComsolData/ELscan_lowEL/electricpotentialGate"+str(vgate_5kVdrift_lowEp[i])+"V"
+        jobname = "Mesh"+str(vgate_5kVdrift_lowEp[i])+"V_"+str(pressure[j])+"bar"
+        pressure_folder = "Mesh_"+str(pressure[j])+"bar"
+        el_folder = "job-"+jobname
+        scriptname = "sbatch_scripts_2ringFC_"+GASNAME+"/"+pressure_folder+"/"+el_folder+"/"+jobname +".sh"
+        print(scriptname)
+        template_str_rep = template.replace("$1", jobname).replace("$2", str(pressure[j])).replace("$3", GASFILE).replace("$4", MPHFILE).replace("$5", DATAFILE).replace("$6", MATFILE).replace("$7", str(N_EVENTS)).replace("$8", GASNAME)
+
+        os.makedirs(os.path.dirname(scriptname), exist_ok=True)
+        with open(scriptname, "wt") as output:
+            output.write (template_str_rep)
+
+#----------------------------------------------
+#----------------------------------------------
+#----------------------------------------------
 pressure = [1.5]
 vgate_3kVdrift = np.arange(-4000,-1200, 200)
 #print(vgate_3kVdrift)
